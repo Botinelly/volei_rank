@@ -1,0 +1,129 @@
+/* styles.css */
+
+/* Estilos básicos */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+/* Estilos para os botões de aba */
+.tab {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.tab button {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 14px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 16px;
+    margin-right: 10px;
+    border-radius: 5px;
+}
+
+.tab button:hover {
+    background-color: #0056b3;
+}
+
+.tab button.active {
+    background-color: #0056b3;
+}
+
+/* Estilos para o conteúdo das abas */
+.tabcontent {
+    display: none;
+    width: 100%;
+    max-width: 800px;
+    background-color: white;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
+
+.tabcontent h1 {
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+/* Estilos para o formulário */
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+form label {
+    margin-bottom: 5px;
+}
+
+form input {
+    margin-bottom: 15px;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+form button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+form button:hover {
+    background-color: #218838;
+}
+
+/* Estilos para a tabela */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table, th, td {
+    border: 1px solid #ccc;
+}
+
+table th, table td {
+    padding: 10px;
+    text-align: center;
+}
+
+table th {
+    background-color: #007BFF;
+    color: white;
+}
+
+table td:nth-child(1) {
+    font-weight: bold;
+}
+
+/* Estilos para o botão de exclusão */
+.delete-btn {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.delete-btn:hover {
+    background-color: #ff1a1a;
+}

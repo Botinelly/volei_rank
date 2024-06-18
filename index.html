@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliação de Desempenho</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-analytics.js"></script>
+    <script src="scripts.js" defer></script>
+</head>
+<body>
+    <div class="tab">
+        <button class="tablinks" onclick="openTab(event, 'Input')">Inserir Dados</button>
+        <button class="tablinks" onclick="openTab(event, 'Visualization')">Visualizar Médias</button>
+    </div>
+
+    <div id="Input" class="tabcontent">
+        <h1>Inserir Pontuação</h1>
+        <form id="ratingForm">
+            <label for="username">Nome do Usuário:</label>
+            <input type="text" id="username" name="username" required><br><br>
+
+            <label for="serve">Saque:</label>
+            <input type="number" id="serve" name="serve" min="1" max="5" required><br><br>
+
+            <label for="attack">Ataque:</label>
+            <input type="number" id="attack" name="attack" min="1" max="5" required><br><br>
+
+            <label for="block">Bloqueio:</label>
+            <input type="number" id="block" name="block" min="1" max="5" required><br><br>
+
+            <label for="set">Levantamento:</label>
+            <input type="number" id="set" name="set" min="1" max="5" required><br><br>
+
+            <label for="reception">Recepção:</label>
+            <input type="number" id="reception" name="reception" min="1" max="5" required><br><br>
+
+            <button type="submit">Salvar</button>
+        </form>
+    </div>
+
+    <div id="Visualization" class="tabcontent">
+        <h1>Pontuações por Usuário</h1>
+        <table id="averageTable">
+            <thead>
+                <tr>
+                    <th>Usuário</th>
+                    <th>Saque</th>
+                    <th>Ataque</th>
+                    <th>Bloqueio</th>
+                    <th>Levantamento</th>
+                    <th>Recepção</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody id="averageTableBody">
+                <!-- Dados das médias serão inseridos dinamicamente aqui -->
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
