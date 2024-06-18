@@ -1,15 +1,37 @@
+/* Estilo do tema escuro */
 body {
     font-family: 'Arial', sans-serif;
-    background: #f0f0f5;
+    background-color: #121212;
+    color: #E0E0E0;
     margin: 0;
     padding: 0;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    background-color: #1F1F1F;
+    color: #E0E0E0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.logo {
+    width: 50px;
+    height: 50px;
+    margin-right: 20px;
+}
+
+header h1 {
+    font-size: 24px;
 }
 
 .tab {
     display: flex;
     justify-content: center;
-    background-color: #4CAF50;
+    background-color: #1F1F1F;
     padding: 10px 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .tab button {
@@ -18,22 +40,26 @@ body {
     cursor: pointer;
     padding: 14px 20px;
     font-size: 17px;
-    color: white;
+    color: #E0E0E0;
     transition: background-color 0.3s;
 }
 
 .tab button:hover {
-    background-color: #45a049;
+    background-color: #333;
 }
 
 .tab button.active {
-    background-color: #3e8e41;
+    background-color: #333;
 }
 
 .tabcontent {
     display: none;
     padding: 20px;
     animation: fadeEffect 1s;
+    background-color: #1F1F1F;
+    border-radius: 8px;
+    margin: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 @keyframes fadeEffect {
@@ -42,10 +68,10 @@ body {
 }
 
 form {
-    background: #fff;
+    background: #2C2C2C;
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 form label {
@@ -57,12 +83,14 @@ form label {
 form input[type="text"] {
     width: calc(100% - 20px);
     padding: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid #555;
     border-radius: 4px;
+    background-color: #121212;
+    color: #E0E0E0;
 }
 
 form button {
-    background-color: #4CAF50;
+    background-color: #6200EE;
     color: white;
     padding: 10px 20px;
     border: none;
@@ -72,7 +100,7 @@ form button {
 }
 
 form button:hover {
-    background-color: #45a049;
+    background-color: #3700B3;
 }
 
 .star-rating {
@@ -83,37 +111,38 @@ form button:hover {
 }
 
 .star-rating span {
-    color: #ccc;
+    color: #555;
 }
 
 .star-rating span:hover,
 .star-rating span:hover ~ span,
 .star-rating .selected {
-    color: gold;
+    color: #FFD700;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
     margin: 20px 0;
-    background: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background: #2C2C2C;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     border-radius: 8px;
+    color: #E0E0E0;
 }
 
 th, td {
-    border: 1px solid #ddd;
+    border: 1px solid #555;
     padding: 12px;
     text-align: center;
 }
 
 th {
-    background-color: #4CAF50;
+    background-color: #6200EE;
     color: white;
 }
 
 tr:hover {
-    background-color: #f1f1f1;
+    background-color: #333;
 }
 
 td button {
@@ -126,20 +155,4 @@ td button {
 
 td strong {
     font-weight: bold;
-}
-
-/* Adicionar estilos CSS conforme necessário, a partir do CSS fornecido */
-
-/* Estilo do cabeçalho e do logo */
-header {
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    background-color: #f0f0f0;
-}
-
-.logo {
-    width: 5%;
-    height: 5%;
-    margin-right: 15px;
 }

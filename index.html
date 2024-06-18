@@ -18,13 +18,15 @@
         <button class="tablinks" onclick="openTab(event, 'Ranking')">Ranking</button>
         <img src="logo.png" alt="Logo" class="logo">
     </div>
-    
+
     <div id="Input" class="tabcontent">
-        <h1>Inserir Pontuação</h1>
-        <h4>Pontuação de 1 a 5 estrelas, onde 1 é horrível e 5 é um Deus no fundamento.</h4>
+        <h2>Inserir Pontuação</h2>
         <form id="ratingForm">
             <label for="username">Nome do Jogador:</label>
-            <input type="text" id="username" name="username" required><br><br>
+            <input type="text" id="username" name="username" list="usernames" required>
+            <datalist id="usernames">
+                <!-- Opções serão preenchidas dinamicamente -->
+            </datalist><br><br>
 
             <label>Saque:</label>
             <div class="star-rating" id="serveRating">
