@@ -1,129 +1,145 @@
-/* styles.css */
-
-/* Estilos básicos */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
+    font-family: 'Arial', sans-serif;
+    background: #f0f0f5;
     margin: 0;
     padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
 }
 
-/* Estilos para os botões de aba */
 .tab {
     display: flex;
     justify-content: center;
-    margin-bottom: 20px;
+    background-color: #4CAF50;
+    padding: 10px 0;
 }
 
 .tab button {
-    background-color: #007BFF;
-    color: white;
+    background-color: inherit;
     border: none;
-    padding: 14px 20px;
     cursor: pointer;
+    padding: 14px 20px;
+    font-size: 17px;
+    color: white;
     transition: background-color 0.3s;
-    font-size: 16px;
-    margin-right: 10px;
-    border-radius: 5px;
 }
 
 .tab button:hover {
-    background-color: #0056b3;
+    background-color: #45a049;
 }
 
 .tab button.active {
-    background-color: #0056b3;
+    background-color: #3e8e41;
 }
 
-/* Estilos para o conteúdo das abas */
 .tabcontent {
     display: none;
-    width: 100%;
-    max-width: 800px;
-    background-color: white;
     padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
+    animation: fadeEffect 1s;
 }
 
-.tabcontent h1 {
-    margin-top: 0;
-    margin-bottom: 20px;
+@keyframes fadeEffect {
+    from {opacity: 0;}
+    to {opacity: 1;}
 }
 
-/* Estilos para o formulário */
 form {
-    display: flex;
-    flex-direction: column;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 form label {
-    margin-bottom: 5px;
-}
-
-form input {
-    margin-bottom: 15px;
-    padding: 10px;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-form button {
-    background-color: #28a745;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: background-color 0.3s;
-}
-
-form button:hover {
-    background-color: #218838;
-}
-
-/* Estilos para a tabela */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
-
-table, th, td {
-    border: 1px solid #ccc;
-}
-
-table th, table td {
-    padding: 10px;
-    text-align: center;
-}
-
-table th {
-    background-color: #007BFF;
-    color: white;
-}
-
-table td:nth-child(1) {
+    display: block;
+    margin: 10px 0 5px;
     font-weight: bold;
 }
 
-/* Estilos para o botão de exclusão */
-.delete-btn {
-    background-color: #ff4d4d;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    cursor: pointer;
+form input[type="text"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    border: 1px solid #ddd;
     border-radius: 4px;
-    transition: background-color 0.3s;
 }
 
-.delete-btn:hover {
-    background-color: #ff1a1a;
+form button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+form button:hover {
+    background-color: #45a049;
+}
+
+.star-rating {
+    display: inline-block;
+    direction: rtl;
+    font-size: 2em;
+    cursor: pointer;
+}
+
+.star-rating span {
+    color: #ccc;
+}
+
+.star-rating span:hover,
+.star-rating span:hover ~ span,
+.star-rating .selected {
+    color: gold;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: center;
+}
+
+th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+td button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2em;
+    color: red;
+}
+
+td strong {
+    font-weight: bold;
+}
+
+/* Adicionar estilos CSS conforme necessário, a partir do CSS fornecido */
+
+/* Estilo do cabeçalho e do logo */
+header {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #f0f0f0;
+}
+
+.logo {
+    width: 5%;
+    height: 5%;
+    margin-right: 15px;
 }

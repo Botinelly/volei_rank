@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Avaliação de Desempenho</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="logo.png" type="image/png">
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-analytics.js"></script>
@@ -14,50 +15,77 @@
     <div class="tab">
         <button class="tablinks" onclick="openTab(event, 'Input')">Inserir Dados</button>
         <button class="tablinks" onclick="openTab(event, 'Visualization')">Visualizar Médias</button>
+        <button class="tablinks" onclick="openTab(event, 'Ranking')">Ranking</button>
+        <img src="logo.png" alt="Logo" class="logo">
     </div>
-
+    
     <div id="Input" class="tabcontent">
         <h1>Inserir Pontuação</h1>
-        <h2>Pontuação somente de 1 a 5, onde 1 é HORRÍVEL e 5 é UM DEUS</h2>
+        <h4>Pontuação de 1 a 5 estrelas, onde 1 é horrível e 5 é um Deus no fundamento.</h4>
         <form id="ratingForm">
             <label for="username">Nome do Usuário:</label>
             <input type="text" id="username" name="username" required><br><br>
 
-            <label for="serve">Saque:</label>
-            <input type="number" id="serve" name="serve" min="1" max="5" required><br><br>
+            <label>Saque:</label>
+            <div class="star-rating" id="serveRating">
+                <span data-value="5">★</span><span data-value="4">★</span><span data-value="3">★</span><span data-value="2">★</span><span data-value="1">★</span>
+            </div><br>
 
-            <label for="attack">Ataque:</label>
-            <input type="number" id="attack" name="attack" min="1" max="5" required><br><br>
+            <label>Ataque:</label>
+            <div class="star-rating" id="attackRating">
+                <span data-value="5">★</span><span data-value="4">★</span><span data-value="3">★</span><span data-value="2">★</span><span data-value="1">★</span>
+            </div><br>
 
-            <label for="block">Bloqueio:</label>
-            <input type="number" id="block" name="block" min="1" max="5" required><br><br>
+            <label>Bloqueio:</label>
+            <div class="star-rating" id="blockRating">
+                <span data-value="5">★</span><span data-value="4">★</span><span data-value="3">★</span><span data-value="2">★</span><span data-value="1">★</span>
+            </div><br>
 
-            <label for="set">Levantamento:</label>
-            <input type="number" id="set" name="set" min="1" max="5" required><br><br>
+            <label>Levantamento:</label>
+            <div class="star-rating" id="setRating">
+                <span data-value="5">★</span><span data-value="4">★</span><span data-value="3">★</span><span data-value="2">★</span><span data-value="1">★</span>
+            </div><br>
 
-            <label for="reception">Recepção:</label>
-            <input type="number" id="reception" name="reception" min="1" max="5" required><br><br>
+            <label>Recepção:</label>
+            <div class="star-rating" id="receptionRating">
+                <span data-value="5">★</span><span data-value="4">★</span><span data-value="3">★</span><span data-value="2">★</span><span data-value="1">★</span>
+            </div><br>
 
             <button type="submit">Salvar</button>
         </form>
     </div>
 
     <div id="Visualization" class="tabcontent">
-        <h1>Pontuações por Usuário</h1>
+        <h1>Médias das Pontuações por Usuário</h1>
         <table id="averageTable">
             <thead>
                 <tr>
                     <th>Usuário</th>
-                    <th>Saque</th>
-                    <th>Ataque</th>
-                    <th>Bloqueio</th>
-                    <th>Levantamento</th>
-                    <th>Recepção</th>
+                    <th>Média de Saque</th>
+                    <th>Média de Ataque</th>
+                    <th>Média de Bloqueio</th>
+                    <th>Média de Levantamento</th>
+                    <th>Média de Recepção</th>
                     <th>Ações</th>
                 </tr>
             </thead>
             <tbody id="averageTableBody">
                 <!-- Dados das médias serão inseridos dinamicamente aqui -->
+            </tbody>
+        </table>
+    </div>
+
+    <div id="Ranking" class="tabcontent">
+        <h1>Ranking dos Usuários</h1>
+        <table id="rankingTable">
+            <thead>
+                <tr>
+                    <th>Usuário</th>
+                    <th>Média Geral</th>
+                </tr>
+            </thead>
+            <tbody id="rankingTableBody">
+                <!-- Dados do ranking serão inseridos dinamicamente aqui -->
             </tbody>
         </table>
     </div>

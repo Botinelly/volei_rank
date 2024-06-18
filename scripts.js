@@ -27,9 +27,11 @@ function openTab(evt, tabName) {
     document.getElementById(tabName).style.display = "block";
     evt.currentTarget.className += " active";
 
-    // Verifica se a aba 'Visualization' foi aberta
+    // Verifica se a aba 'Visualization' ou 'Ranking' foi aberta
     if (tabName === 'Visualization') {
         loadAverages();
+    } else if (tabName === 'Ranking') {
+        loadRanking();
     }
 }
 
@@ -42,32 +44,63 @@ document.addEventListener('DOMContentLoaded', (event) => {
 const ratingForm = document.getElementById('ratingForm');
 
 // Função para salvar os dados no Firebase
-ratingForm.addEventListener('submit', function (e) {
-    e.preventDefault();
-    
-    const username = document.getElementById('username').value;
-    const serve = parseInt(document.getElementById('serve').value);
-    const attack = parseInt(document.getElementById('attack').value);
-    const block = parseInt(document.getElementById('block').value);
-    const set = parseInt(document.getElementById('set').value);
-    const reception = parseInt(document.getElementById('reception').value);
+ratingForm.addEventListener('submit', (event) => {
+    event.preventDefault();
 
-    // Referência ao Firebase
+    const username = document.getElementById('username').value;
+    const serve = getStarRating('serveRating');
+    const attack = getStarRating('attackRating');
+    const block = getStarRating('blockRating');
+    const set = getStarRating('setRating');
+    const reception = getStarRating('receptionRating');
+
     const ratingsRef = firebase.database().ref('ratings');
-    
-    // Adiciona os dados
-    ratingsRef.push({
-        username: username,
-        serve: serve,
-        attack: attack,
-        block: block,
-        set: set,
-        reception: reception
-    }).then(() => {
-        alert('Dados salvos com sucesso!');
-        ratingForm.reset();
-    }).catch((error) => {
-        console.error('Erro ao salvar dados no Firebase:', error);
+    const newRating = ratingsRef.push();
+
+    newRating.set({
+        username,
+        serve,
+        attack,
+        block,
+        set,
+        reception
+    });
+
+    ratingForm.reset();
+    resetStarRatings();
+    alert('Pontuação salva com sucesso!');
+});
+
+// Função para obter a classificação por estrelas
+function getStarRating(ratingId) {
+    const stars = document.querySelectorAll(`#${ratingId} span.selected`);
+    return stars.length;
+}
+
+// Função para redefinir as estrelas selecionadas
+function resetStarRatings() {
+    const starContainers = document.querySelectorAll('.star-rating');
+    starContainers.forEach(container => {
+        container.querySelectorAll('span').forEach(star => {
+            star.classList.remove('selected');
+        });
+    });
+}
+
+// Adiciona evento de clique para selecionar estrelas
+document.querySelectorAll('.star-rating').forEach(starContainer => {
+    starContainer.addEventListener('click', function (event) {
+        if (!event.target.matches('span')) return;
+
+        const clickedStar = event.target;
+        const rating = parseInt(clickedStar.getAttribute('data-value'));
+        const siblings = Array.from(clickedStar.parentElement.children);
+
+        // Marca as estrelas até o valor clicado
+        siblings.forEach(sibling => {
+            const value = parseInt(sibling.getAttribute('data-value'));
+            sibling.classList.toggle('selected', value <= rating);
+        });
     });
 });
 
@@ -126,7 +159,7 @@ function displayAverages(usersAverages) {
 
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>${user}</td>
+            <td><strong>${user}</strong></td>
             <td>${averages.serve}</td>
             <td>${averages.attack}</td>
             <td>${averages.block}</td>
@@ -171,6 +204,80 @@ function calculateAverage(scoreArray) {
     }
     const sum = scoreArray.reduce((acc, curr) => acc + curr, 0);
     return (sum / scoreArray.length).toFixed(2);
+}
+
+// Função para calcular a média geral
+function calculateOverallAverage(userAverages) {
+    const totalAverage = (parseFloat(userAverages.serve) + parseFloat(userAverages.attack) + parseFloat(userAverages.block) + parseFloat(userAverages.set) + parseFloat(userAverages.reception)) / 5;
+    return totalAverage.toFixed(2);
+}
+
+// Função para carregar e exibir o ranking
+function loadRanking() {
+    const ratingsRef = firebase.database().ref('ratings');
+
+    ratingsRef.once('value', (snapshot) => {
+        const ratings = snapshot.val();
+
+        if (!ratings) {
+            console.log('Sem dados disponíveis.');
+            return;
+        }
+
+        const usersAverages = {};
+
+        // Organizar por usuário e calcular médias
+        Object.keys(ratings).forEach((key) => {
+            const rating = ratings[key];
+            const user = rating.username;
+
+            if (!usersAverages[user]) {
+                usersAverages[user] = {
+                    serve: [],
+                    attack: [],
+                    block: [],
+                    set: [],
+                    reception: []
+                };
+            }
+
+            usersAverages[user].serve.push(rating.serve);
+            usersAverages[user].attack.push(rating.attack);
+            usersAverages[user].block.push(rating.block);
+            usersAverages[user].set.push(rating.set);
+            usersAverages[user].reception.push(rating.reception);
+        });
+
+        // Calcular médias e organizar o ranking
+        const ranking = Object.keys(usersAverages).map(user => {
+            const averages = calculateAverages(usersAverages[user]);
+            const overallAverage = calculateOverallAverage(averages);
+            return {
+                user,
+                overallAverage
+            };
+        }).sort((a, b) => b.overallAverage - a.overallAverage);
+
+        // Exibir o ranking na tabela
+        displayRanking(ranking);
+    }).catch((error) => {
+        console.error('Erro ao carregar dados do Firebase:', error);
+    });
+}
+
+// Função para exibir o ranking na tabela
+function displayRanking(ranking) {
+    const rankingTableBody = document.getElementById('rankingTableBody');
+    rankingTableBody.innerHTML = '';
+
+    ranking.forEach(entry => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td><strong>${entry.user}</strong></td>
+            <td>${entry.overallAverage}</td>
+        `;
+        rankingTableBody.appendChild(row);
+    });
 }
 
 // Chamada inicial para carregar e exibir médias
