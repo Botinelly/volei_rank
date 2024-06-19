@@ -336,14 +336,14 @@ function displayTeams(teams) {
             const position = getSuggestedPosition(player.averages);
             const listItem = document.createElement('li');
             const convert = {
-                'Saque': 'Ponta/Fundo',
+                'Saque': 'Saque',
                 'Recepção': 'Meio/Fundo',
-                'Levantamento': 'Levantador/Meio',
+                'Levantamento': 'Levantador',
                 'Ataque': 'Ponta',
-                'Bloqueio': 'Levantador/Ponta'
+                'Bloqueio': 'Bloqueio/Ataque'
             }
             //: (Saque: ${player.averages.serve}, Ataque: ${player.averages.attack}, Bloqueio: ${player.averages.block}, Levantamento: ${player.averages.set}, Recepção: ${player.averages.reception})
-            listItem.textContent = `${player.user} | Posição SUGERIDA: ${convert[position]}`;
+            listItem.textContent = `${player.user} | Posição SUGERIDA: 1° ${convert[position[0]]} / 2° ${convert[position[1]]}`;
             teamList.appendChild(listItem);
         });
 
@@ -373,6 +373,7 @@ function calculateTeamAverage(team) {
 }
 
 // Get suggested position based on best rating
+// Get suggested positions based on best ratings
 function getSuggestedPosition(averages) {
     const positions = {
         serve: 'Saque',
@@ -382,19 +383,17 @@ function getSuggestedPosition(averages) {
         reception: 'Recepção'
     };
 
-    let bestSkill = 'serve';
-    let bestRating = averages.serve;
+    // Convert averages object to array of objects for easier sorting
+    const averagesArray = Object.keys(averages).map(skill => {
+        return { skill: skill, rating: parseFloat(averages[skill]) };
+    });
 
-    for (let skill in averages) {
-        if (parseFloat(averages[skill]) > bestRating) {
-            bestSkill = skill;
-            bestRating = averages[skill];
-        }
-    }
+    // Sort skills by rating descending
+    averagesArray.sort((a, b) => b.rating - a.rating);
 
-    return positions[bestSkill];
+    // Return the top two skills
+    return [positions[averagesArray[0].skill], positions[averagesArray[1].skill]];
 }
-
 // Delete user data
 function deleteUser(username) {
     const ratingsRef = firebase.database().ref('ratings');
