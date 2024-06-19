@@ -3,93 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vôlei Relaxado 3.0</title>
+    <title>Vôlei Relaxado</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="icon" href="logo.png" type="image/png">
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-analytics.js"></script>
-    <script src="scripts.js" defer></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <script defer src="scripts.js"></script>
 </head>
 <body>
     <div class="tab">
-        <button class="tablinks" onclick="openTab(event, 'Input')">Inserir Dados</button>
-        <button class="tablinks" onclick="openTab(event, 'Visualization')">Visualizar Médias</button>
-        <button class="tablinks" onclick="openTab(event, 'Ranking')">Ranking</button>
         <img src="logo.png" alt="Logo" class="logo">
+        <button class="tablinks" onclick="openTab(event, 'Input')">Inserir Dados</button>
+        <button class="tablinks" onclick="openTab(event, 'Visualization')">Médias</button>
+        <button class="tablinks" onclick="openTab(event, 'Ranking')">Ranking</button>
+        <button class="tablinks" onclick="openTab(event, 'Teams')">Montar Times</button>
     </div>
 
     <div id="Input" class="tabcontent">
-        <h2>Inserir Pontuação</h2>
+        <h3>Inserir Dados</h3>
         <form id="ratingForm">
-            <label for="username">Nome do Jogador:</label>
-            <input type="text" id="username" name="username" list="usernames" required>
-            <datalist id="usernames">
-                <!-- Opções serão preenchidas dinamicamente -->
-            </datalist><br><br>
+            <label for="username">Nome de Usuário:</label>
+            <input list="usernames" id="username" name="username" required>
+            <datalist id="usernames"></datalist>
 
-            <label>Saque:</label>
+            <label for="serveRating">Saque:</label>
             <div class="star-rating" id="serveRating">
-                <span data-value="5">★</span><span data-value="4">★</span><span data-value="3">★</span><span data-value="2">★</span><span data-value="1">★</span>
-            </div><br>
+                <span data-value="1">&#9733;</span>
+                <span data-value="2">&#9733;</span>
+                <span data-value="3">&#9733;</span>
+                <span data-value="4">&#9733;</span>
+                <span data-value="5">&#9733;</span>
+            </div>
 
-            <label>Ataque:</label>
+            <label for="attackRating">Ataque:</label>
             <div class="star-rating" id="attackRating">
-                <span data-value="5">★</span><span data-value="4">★</span><span data-value="3">★</span><span data-value="2">★</span><span data-value="1">★</span>
-            </div><br>
+                <span data-value="1">&#9733;</span>
+                <span data-value="2">&#9733;</span>
+                <span data-value="3">&#9733;</span>
+                <span data-value="4">&#9733;</span>
+                <span data-value="5">&#9733;</span>
+            </div>
 
-            <label>Bloqueio:</label>
+            <label for="blockRating">Bloqueio:</label>
             <div class="star-rating" id="blockRating">
-                <span data-value="5">★</span><span data-value="4">★</span><span data-value="3">★</span><span data-value="2">★</span><span data-value="1">★</span>
-            </div><br>
+                <span data-value="1">&#9733;</span>
+                <span data-value="2">&#9733;</span>
+                <span data-value="3">&#9733;</span>
+                <span data-value="4">&#9733;</span>
+                <span data-value="5">&#9733;</span>
+            </div>
 
-            <label>Levantamento:</label>
+            <label for="setRating">Levantamento:</label>
             <div class="star-rating" id="setRating">
-                <span data-value="5">★</span><span data-value="4">★</span><span data-value="3">★</span><span data-value="2">★</span><span data-value="1">★</span>
-            </div><br>
+                <span data-value="1">&#9733;</span>
+                <span data-value="2">&#9733;</span>
+                <span data-value="3">&#9733;</span>
+                <span data-value="4">&#9733;</span>
+                <span data-value="5">&#9733;</span>
+            </div>
 
-            <label>Recepção:</label>
+            <label for="receptionRating">Recepção:</label>
             <div class="star-rating" id="receptionRating">
-                <span data-value="5">★</span><span data-value="4">★</span><span data-value="3">★</span><span data-value="2">★</span><span data-value="1">★</span>
-            </div><br>
+                <span data-value="1">&#9733;</span>
+                <span data-value="2">&#9733;</span>
+                <span data-value="3">&#9733;</span>
+                <span data-value="4">&#9733;</span>
+                <span data-value="5">&#9733;</span>
+            </div>
 
             <button type="submit">Salvar</button>
         </form>
     </div>
 
     <div id="Visualization" class="tabcontent">
-        <h1>Médias das Pontuações por Jogador</h1>
-        <table id="averageTable">
+        <h3>Médias</h3>
+        <table>
             <thead>
                 <tr>
-                    <th>Jogador</th>
-                    <th>Média de Saque</th>
-                    <th>Média de Ataque</th>
-                    <th>Média de Bloqueio</th>
-                    <th>Média de Levantamento</th>
-                    <th>Média de Recepção</th>
+                    <th>Nome</th>
+                    <th>Saque</th>
+                    <th>Ataque</th>
+                    <th>Bloqueio</th>
+                    <th>Levantamento</th>
+                    <th>Recepção</th>
                     <th>Ações</th>
                 </tr>
             </thead>
-            <tbody id="averageTableBody">
-                <!-- Dados das médias serão inseridos dinamicamente aqui -->
-            </tbody>
+            <tbody id="averageTableBody"></tbody>
         </table>
     </div>
 
     <div id="Ranking" class="tabcontent">
-        <h1>Ranking dos Jogadores</h1>
-        <table id="rankingTable">
+        <h3>Ranking</h3>
+        <table>
             <thead>
                 <tr>
-                    <th>Jogador</th>
+                    <th>Nome</th>
                     <th>Média Geral</th>
                 </tr>
             </thead>
-            <tbody id="rankingTableBody">
-                <!-- Dados do ranking serão inseridos dinamicamente aqui -->
-            </tbody>
+            <tbody id="rankingTableBody"></tbody>
         </table>
+    </div>
+
+    <div id="Teams" class="tabcontent">
+        <h3>Montar Times</h3>
+        <button onclick="loadAveragesForTeams()">Gerar Times Balanceados</button>
+        <div id="teamsContainer"></div>
     </div>
 </body>
 </html>

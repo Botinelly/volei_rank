@@ -1,8 +1,7 @@
-/* Estilo do tema escuro */
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: Arial, sans-serif;
     background-color: #121212;
-    color: #E0E0E0;
+    color: #ffffff;
     margin: 0;
     padding: 0;
 }
@@ -11,55 +10,47 @@ header {
     display: flex;
     align-items: center;
     padding: 20px;
-    background-color: #1F1F1F;
-    color: #E0E0E0;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-.logo {
-    width: 50px;
-    height: 50px;
-    margin-right: 20px;
+    background-color: #1E1E1E;
 }
 
 header h1 {
+    margin: 0 0 0 20px;
     font-size: 24px;
+}
+
+.logo {
+    width: 10%;
+    height: 10%;
 }
 
 .tab {
     display: flex;
+    background-color: #333;
     justify-content: center;
-    background-color: #1F1F1F;
-    padding: 10px 0;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .tab button {
     background-color: inherit;
+    color: #ffffff;
+    padding: 14px 20px;
     border: none;
     cursor: pointer;
-    padding: 14px 20px;
+    transition: 0.3s;
     font-size: 17px;
-    color: #E0E0E0;
-    transition: background-color 0.3s;
 }
 
 .tab button:hover {
-    background-color: #333;
+    background-color: #575757;
 }
 
 .tab button.active {
-    background-color: #333;
+    background-color: #6200EE;
 }
 
 .tabcontent {
     display: none;
     padding: 20px;
-    animation: fadeEffect 1s;
-    background-color: #1F1F1F;
-    border-radius: 8px;
-    margin: 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    animation: fadeEffect 0.5s;
 }
 
 @keyframes fadeEffect {
@@ -68,55 +59,35 @@ header h1 {
 }
 
 form {
-    background: #2C2C2C;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    max-width: 400px;
+    margin: auto;
 }
 
 form label {
-    display: block;
     margin: 10px 0 5px;
-    font-weight: bold;
 }
 
-form input[type="text"] {
-    width: calc(100% - 20px);
+form input[type="text"], form input[list] {
     padding: 10px;
-    border: 1px solid #555;
-    border-radius: 4px;
-    background-color: #121212;
-    color: #E0E0E0;
-}
-
-form button {
-    background-color: #6200EE;
-    color: white;
-    padding: 10px 20px;
+    margin-bottom: 20px;
     border: none;
     border-radius: 4px;
-    cursor: pointer;
-    margin-top: 10px;
-}
-
-form button:hover {
-    background-color: #3700B3;
 }
 
 .star-rating {
-    display: inline-block;
-    direction: rtl;
-    font-size: 2em;
-    cursor: pointer;
+    display: flex;
 }
 
 .star-rating span {
-    color: #555;
+    font-size: 1.5em;
+    cursor: pointer;
+    color: #bbb;
+    transition: color 0.2s;
 }
 
-.star-rating span:hover,
-.star-rating span:hover ~ span,
-.star-rating .selected {
+.star-rating span.selected {
     color: #FFD700;
 }
 
@@ -124,21 +95,16 @@ table {
     width: 100%;
     border-collapse: collapse;
     margin: 20px 0;
-    background: #2C2C2C;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
-    color: #E0E0E0;
 }
 
 th, td {
-    border: 1px solid #555;
     padding: 12px;
-    text-align: center;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
 }
 
 th {
-    background-color: #6200EE;
-    color: white;
+    background-color: #333;
 }
 
 tr:hover {
@@ -155,4 +121,44 @@ td button {
 
 td strong {
     font-weight: bold;
+}
+
+button {
+    background-color: #6200EE;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #3700B3;
+}
+
+@media screen and (max-width: 600px) {
+    .tabcontent, form, table {
+        margin: 0;
+        padding: 10px;
+    }
+
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    header h1 {
+        font-size: 18px;
+        margin-top: 10px;
+    }
+
+    .tab {
+        flex-direction: column;
+    }
+
+    .tab button {
+        padding: 10px;
+        font-size: 14px;
+    }
 }

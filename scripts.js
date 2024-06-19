@@ -1,4 +1,4 @@
-// Configuração do Firebase
+// Your web app's Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyC1LY3XXHiYJS7WEiDJLx68VqI3YewMHwU",
     authDomain: "voleirelaxado.firebaseapp.com",
@@ -9,139 +9,112 @@ const firebaseConfig = {
     measurementId: "G-Q4KY66DYFC"
 };
 
-// Inicialização do Firebase
+// Initialize Firebase
 firebase.initializeApp(firebaseConfig);
-firebase.analytics();
 
-// Função para mudar de aba
-function openTab(evt, tabName) {
-    var i, tabcontent, tablinks;
-    tabcontent = document.getElementsByClassName("tabcontent");
-    for (i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].style.display = "none";
-    }
-    tablinks = document.getElementsByClassName("tablinks");
-    for (i = 0; i < tablinks.length; i++) {
-        tablinks[i].className = tablinks[i].className.replace(" active", "");
-    }
-    document.getElementById(tabName).style.display = "block";
-    evt.currentTarget.className += " active";
+// Function to handle star rating
+function handleStarRating(starRatingElement) {
+    const stars = starRatingElement.querySelectorAll('span');
 
-    // Verifica se a aba 'Visualization' foi aberta
-    if (tabName === 'Visualization') {
-        loadAverages();
-    }
+    stars.forEach(star => {
+        star.addEventListener('click', () => {
+            const value = star.getAttribute('data-value');
 
-    // Verifica se a aba 'Ranking' foi aberta
-    if (tabName === 'Ranking') {
-        loadRanking();
-    }
+            stars.forEach(innerStar => {
+                innerStar.classList.toggle('selected', innerStar.getAttribute('data-value') <= value);
+            });
+
+            starRatingElement.setAttribute('data-rating', value);
+        });
+    });
 }
 
-// Abrir a aba "Input" por padrão
-document.addEventListener('DOMContentLoaded', (event) => {
-    document.querySelector('.tab button:first-child').click();
-    loadUsernames();  // Carregar nomes de usuários ao carregar a página
-});
+// Handle star ratings
+document.querySelectorAll('.star-rating').forEach(handleStarRating);
 
-// Referência ao formulário
-const ratingForm = document.getElementById('ratingForm');
-
-// Função para salvar os dados no Firebase
-ratingForm.addEventListener('submit', (event) => {
+// Form submission handler
+document.getElementById('ratingForm').addEventListener('submit', function(event) {
     event.preventDefault();
 
     const username = document.getElementById('username').value;
-    const serve = getStarRating('serveRating');
-    const attack = getStarRating('attackRating');
-    const block = getStarRating('blockRating');
-    const set = getStarRating('setRating');
-    const reception = getStarRating('receptionRating');
+    const serveRating = document.getElementById('serveRating').getAttribute('data-rating');
+    const attackRating = document.getElementById('attackRating').getAttribute('data-rating');
+    const blockRating = document.getElementById('blockRating').getAttribute('data-rating');
+    const setRating = document.getElementById('setRating').getAttribute('data-rating');
+    const receptionRating = document.getElementById('receptionRating').getAttribute('data-rating');
 
     const ratingsRef = firebase.database().ref('ratings');
-    const newRating = ratingsRef.push();
-
-    newRating.set({
-        username,
-        serve,
-        attack,
-        block,
-        set,
-        reception
+    const newRatingRef = ratingsRef.push();
+    newRatingRef.set({
+        username: username,
+        serve: parseInt(serveRating),
+        attack: parseInt(attackRating),
+        block: parseInt(blockRating),
+        set: parseInt(setRating),
+        reception: parseInt(receptionRating)
     });
 
-    ratingForm.reset();
-    resetStarRatings();
-    alert('Pontuação salva com sucesso!');
-    loadUsernames();  // Atualizar a lista de usuários após salvar
+    document.getElementById('ratingForm').reset();
+    document.querySelectorAll('.star-rating span').forEach(star => {
+        star.classList.remove('selected');
+    });
+
+    loadUsernames();
+    loadAverages();
 });
 
-// Função para obter a classificação por estrelas
-function getStarRating(ratingId) {
-    const stars = document.querySelectorAll(`#${ratingId} span.selected`);
-    return stars.length;
-}
-
-// Função para redefinir as estrelas selecionadas
-function resetStarRatings() {
-    const starContainers = document.querySelectorAll('.star-rating');
-    starContainers.forEach(container => {
-        container.querySelectorAll('span').forEach(star => {
-            star.classList.remove('selected');
-        });
-    });
-}
-
-// Adiciona evento de clique para selecionar estrelas
-document.querySelectorAll('.star-rating').forEach(starContainer => {
-    starContainer.addEventListener('click', function (event) {
-        if (!event.target.matches('span')) return;
-
-        const clickedStar = event.target;
-        const rating = parseInt(clickedStar.getAttribute('data-value'));
-        const siblings = Array.from(clickedStar.parentElement.children);
-
-        // Marca as estrelas até o valor clicado
-        siblings.forEach(sibling => {
-            const value = parseInt(sibling.getAttribute('data-value'));
-            sibling.classList.toggle('selected', value <= rating);
-        });
-    });
-});
-
-// Função para carregar nomes de usuários cadastrados
+// Load usernames for datalist
 function loadUsernames() {
-    const usernamesRef = firebase.database().ref('ratings');
-    usernamesRef.once('value', (snapshot) => {
-        const usernames = [];
-        snapshot.forEach((childSnapshot) => {
-            const data = childSnapshot.val();
-            if (!usernames.includes(data.username)) {
-                usernames.push(data.username);
-            }
+    const ratingsRef = firebase.database().ref('ratings');
+
+    ratingsRef.once('value', (snapshot) => {
+        const ratings = snapshot.val();
+
+        if (!ratings) {
+            console.log('Sem dados disponíveis.');
+            return;
+        }
+
+        const usernames = new Set();
+
+        Object.keys(ratings).forEach((key) => {
+            const rating = ratings[key];
+            usernames.add(rating.username);
         });
 
-        const datalist = document.getElementById('usernames');
-        datalist.innerHTML = '';  // Limpar opções existentes
+        const usernamesDatalist = document.getElementById('usernames');
+        usernamesDatalist.innerHTML = '';
 
         usernames.forEach(username => {
             const option = document.createElement('option');
             option.value = username;
-            datalist.appendChild(option);
+            usernamesDatalist.appendChild(option);
         });
+    }).catch((error) => {
+        console.error('Erro ao carregar dados do Firebase:', error);
     });
 }
 
-// Função para carregar médias
+// Load averages for visualization
 function loadAverages() {
     const ratingsRef = firebase.database().ref('ratings');
-    ratingsRef.once('value', (snapshot) => {
-        const userRatings = {};
 
-        snapshot.forEach((childSnapshot) => {
-            const data = childSnapshot.val();
-            if (!userRatings[data.username]) {
-                userRatings[data.username] = {
+    ratingsRef.once('value', (snapshot) => {
+        const ratings = snapshot.val();
+
+        if (!ratings) {
+            console.log('Sem dados disponíveis.');
+            return;
+        }
+
+        const usersAverages = {};
+
+        Object.keys(ratings).forEach((key) => {
+            const rating = ratings[key];
+            const user = rating.username;
+
+            if (!usersAverages[user]) {
+                usersAverages[user] = {
                     serve: [],
                     attack: [],
                     block: [],
@@ -150,89 +123,302 @@ function loadAverages() {
                 };
             }
 
-            userRatings[data.username].serve.push(data.serve);
-            userRatings[data.username].attack.push(data.attack);
-            userRatings[data.username].block.push(data.block);
-            userRatings[data.username].set.push(data.set);
-            userRatings[data.username].reception.push(data.reception);
+            usersAverages[user].serve.push(rating.serve);
+            usersAverages[user].attack.push(rating.attack);
+            usersAverages[user].block.push(rating.block);
+            usersAverages[user].set.push(rating.set);
+            usersAverages[user].reception.push(rating.reception);
         });
 
         const averageTableBody = document.getElementById('averageTableBody');
         averageTableBody.innerHTML = '';
 
-        for (const username in userRatings) {
-            const ratings = userRatings[username];
-            const avgServe = (ratings.serve.reduce((a, b) => a + b, 0) / ratings.serve.length).toFixed(2);
-            const avgAttack = (ratings.attack.reduce((a, b) => a + b, 0) / ratings.attack.length).toFixed(2);
-            const avgBlock = (ratings.block.reduce((a, b) => a + b, 0) / ratings.block.length).toFixed(2);
-            const avgSet = (ratings.set.reduce((a, b) => a + b, 0) / ratings.set.length).toFixed(2);
-            const avgReception = (ratings.reception.reduce((a, b) => a + b, 0) / ratings.reception.length).toFixed(2);
+        Object.keys(usersAverages).forEach(user => {
+            const userRatings = usersAverages[user];
+            const averages = calculateAverages(userRatings);
 
             const row = document.createElement('tr');
             row.innerHTML = `
-                <td>${username}</td>
-                <td>${avgServe}</td>
-                <td>${avgAttack}</td>
-                <td>${avgBlock}</td>
-                <td>${avgSet}</td>
-                <td>${avgReception}</td>
-                <td><button onclick="deleteUserRatings('${username}')">Excluir</button></td>
+                <td>${user}</td>
+                <td>${averages.serve}</td>
+                <td>${averages.attack}</td>
+                <td>${averages.block}</td>
+                <td>${averages.set}</td>
+                <td>${averages.reception}</td>
+                <td><button onclick="deleteUser('${user}')">🗑️</button></td>
             `;
             averageTableBody.appendChild(row);
-        }
+        });
+    }).catch((error) => {
+        console.error('Erro ao carregar dados do Firebase:', error);
     });
 }
 
-// Função para carregar ranking
-function loadRanking() {
+// Calculate averages for each user
+function calculateAverages(userRatings) {
+    const average = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length || 0;
+    return {
+        serve: average(userRatings.serve).toFixed(2),
+        attack: average(userRatings.attack).toFixed(2),
+        block: average(userRatings.block).toFixed(2),
+        set: average(userRatings.set).toFixed(2),
+        reception: average(userRatings.reception).toFixed(2)
+    };
+}
+
+// Load rankings for ranking tab
+function loadRankings() {
     const ratingsRef = firebase.database().ref('ratings');
+
     ratingsRef.once('value', (snapshot) => {
-        const userRatings = {};
+        const ratings = snapshot.val();
 
-        snapshot.forEach((childSnapshot) => {
-            const data = childSnapshot.val();
-            if (!userRatings[data.username]) {
-                userRatings[data.username] = [];
-            }
-
-            const avgRating = (data.serve + data.attack + data.block + data.set + data.reception) / 5;
-            userRatings[data.username].push(avgRating);
-        });
-
-        const userAverages = [];
-        for (const username in userRatings) {
-            const avgRating = (userRatings[username].reduce((a, b) => a + b, 0) / userRatings[username].length).toFixed(2);
-            userAverages.push({ username, avgRating });
+        if (!ratings) {
+            console.log('Sem dados disponíveis.');
+            return;
         }
 
-        userAverages.sort((a, b) => b.avgRating - a.avgRating);
+        const usersAverages = {};
+
+        Object.keys(ratings).forEach((key) => {
+            const rating = ratings[key];
+            const user = rating.username;
+
+            if (!usersAverages[user]) {
+                usersAverages[user] = {
+                    serve: [],
+                    attack: [],
+                    block: [],
+                    set: [],
+                    reception: []
+                };
+            }
+
+            usersAverages[user].serve.push(rating.serve);
+            usersAverages[user].attack.push(rating.attack);
+            usersAverages[user].block.push(rating.block);
+            usersAverages[user].set.push(rating.set);
+            usersAverages[user].reception.push(rating.reception);
+        });
 
         const rankingTableBody = document.getElementById('rankingTableBody');
         rankingTableBody.innerHTML = '';
 
-        userAverages.forEach(user => {
+        const userAverageArray = Object.keys(usersAverages).map(user => {
+            const averages = calculateAverages(usersAverages[user]);
+            return {
+                user: user,
+                average: ((parseFloat(averages.serve) + parseFloat(averages.attack) + parseFloat(averages.block) + parseFloat(averages.set) + parseFloat(averages.reception)) / 5).toFixed(2)
+            };
+        });
+
+        userAverageArray.sort((a, b) => b.average - a.average);
+
+        userAverageArray.forEach(user => {
             const row = document.createElement('tr');
             row.innerHTML = `
-                <td>${user.username}</td>
-                <td>${user.avgRating}</td>
+                <td>${user.user}</td>
+                <td>${user.average}</td>
             `;
             rankingTableBody.appendChild(row);
         });
+    }).catch((error) => {
+        console.error('Erro ao carregar dados do Firebase:', error);
     });
 }
 
-// Função para deletar pontuações de um usuário
-function deleteUserRatings(username) {
+// Open tab and load data
+function openTab(evt, tabName) {
+    const tabcontent = document.querySelectorAll('.tabcontent');
+    tabcontent.forEach(tab => tab.style.display = 'none');
+
+    const tablinks = document.querySelectorAll('.tab button');
+    tablinks.forEach(tab => tab.className = tab.className.replace(' active', ''));
+
+    document.getElementById(tabName).style.display = 'block';
+    evt.currentTarget.className += ' active';
+
+    if (tabName === 'Visualization') {
+        loadAverages();
+    } else if (tabName === 'Ranking') {
+        loadRankings();
+    } else if (tabName === 'Teams') {
+        loadAveragesForTeams();
+    }
+}
+
+// Load averages for team generation
+function loadAveragesForTeams() {
     const ratingsRef = firebase.database().ref('ratings');
+
     ratingsRef.once('value', (snapshot) => {
-        snapshot.forEach((childSnapshot) => {
-            if (childSnapshot.val().username === username) {
-                childSnapshot.ref.remove();
+        const ratings = snapshot.val();
+
+        if (!ratings) {
+            console.log('Sem dados disponíveis.');
+            return;
+        }
+
+        const usersAverages = {};
+
+        Object.keys(ratings).forEach((key) => {
+            const rating = ratings[key];
+            const user = rating.username;
+
+            if (!usersAverages[user]) {
+                usersAverages[user] = {
+                    serve: [],
+                    attack: [],
+                    block: [],
+                    set: [],
+                    reception: []
+                };
+            }
+
+            usersAverages[user].serve.push(rating.serve);
+            usersAverages[user].attack.push(rating.attack);
+            usersAverages[user].block.push(rating.block);
+            usersAverages[user].set.push(rating.set);
+            usersAverages[user].reception.push(rating.reception);
+        });
+
+        const teams = createBalancedTeams(usersAverages);
+        displayTeams(teams);
+    }).catch((error) => {
+        console.error('Erro ao carregar dados do Firebase:', error);
+    });
+}
+
+// Create balanced teams
+function createBalancedTeams(usersAverages) {
+    const users = Object.keys(usersAverages).map(user => {
+        const averages = calculateAverages(usersAverages[user]);
+        return {
+            user: user,
+            averages: averages
+        };
+    });
+
+    users.sort((a, b) => {
+        return (parseFloat(b.averages.serve) + parseFloat(b.averages.attack) + parseFloat(b.averages.block) + parseFloat(b.averages.set) + parseFloat(b.averages.reception)) -
+               (parseFloat(a.averages.serve) + parseFloat(a.averages.attack) + parseFloat(a.averages.block) + parseFloat(a.averages.set) + parseFloat(a.averages.reception));
+    });
+
+    const teams = [];
+    const teamCount = Math.ceil(users.length / 6);
+
+    for (let i = 0; i < teamCount; i++) {
+        teams.push([]);
+    }
+
+    let teamIndex = 0;
+    users.forEach(user => {
+        teams[teamIndex].push(user);
+        teamIndex = (teamIndex + 1) % teamCount;
+    });
+
+    return teams;
+}
+
+// Display teams
+function displayTeams(teams) {
+    const teamsContainer = document.getElementById('teamsContainer');
+    teamsContainer.innerHTML = '';
+
+    teams.forEach((team, index) => {
+        const teamDiv = document.createElement('div');
+        teamDiv.className = 'team';
+        teamDiv.innerHTML = `<h4>Time ${index + 1} (Média do time: ${calculateTeamAverage(team).toFixed(2)})</h4>`;
+
+        const teamList = document.createElement('ul');
+
+        team.forEach(player => {
+            const position = getSuggestedPosition(player.averages);
+            const listItem = document.createElement('li');
+            const convert = {
+                'Saque': 'Ponta/Fundo',
+                'Recepção': 'Meio/Fundo',
+                'Levantamento': 'Levantador/Meio',
+                'Ataque': 'Ponta',
+                'Bloqueio': 'Levantador/Ponta'
+            }
+            //: (Saque: ${player.averages.serve}, Ataque: ${player.averages.attack}, Bloqueio: ${player.averages.block}, Levantamento: ${player.averages.set}, Recepção: ${player.averages.reception})
+            listItem.textContent = `${player.user} | Posição SUGERIDA: ${convert[position]}`;
+            teamList.appendChild(listItem);
+        });
+
+        teamDiv.appendChild(teamList);
+        teamsContainer.appendChild(teamDiv);
+    });
+}
+
+// Calculate team average rating
+function calculateTeamAverage(team) {
+    const numPlayers = team.length;
+    if (numPlayers === 0) return 0;
+
+    const totalServe = team.reduce((acc, player) => acc + parseFloat(player.averages.serve), 0);
+    const totalAttack = team.reduce((acc, player) => acc + parseFloat(player.averages.attack), 0);
+    const totalBlock = team.reduce((acc, player) => acc + parseFloat(player.averages.block), 0);
+    const totalSet = team.reduce((acc, player) => acc + parseFloat(player.averages.set), 0);
+    const totalReception = team.reduce((acc, player) => acc + parseFloat(player.averages.reception), 0);
+
+    const averageServe = totalServe / numPlayers;
+    const averageAttack = totalAttack / numPlayers;
+    const averageBlock = totalBlock / numPlayers;
+    const averageSet = totalSet / numPlayers;
+    const averageReception = totalReception / numPlayers;
+
+    return (averageServe + averageAttack + averageBlock + averageSet + averageReception) / 5;
+}
+
+// Get suggested position based on best rating
+function getSuggestedPosition(averages) {
+    const positions = {
+        serve: 'Saque',
+        attack: 'Ataque',
+        block: 'Bloqueio',
+        set: 'Levantamento',
+        reception: 'Recepção'
+    };
+
+    let bestSkill = 'serve';
+    let bestRating = averages.serve;
+
+    for (let skill in averages) {
+        if (parseFloat(averages[skill]) > bestRating) {
+            bestSkill = skill;
+            bestRating = averages[skill];
+        }
+    }
+
+    return positions[bestSkill];
+}
+
+// Delete user data
+function deleteUser(username) {
+    const ratingsRef = firebase.database().ref('ratings');
+
+    ratingsRef.once('value', (snapshot) => {
+        const ratings = snapshot.val();
+
+        if (!ratings) {
+            console.log('Sem dados disponíveis.');
+            return;
+        }
+
+        Object.keys(ratings).forEach((key) => {
+            if (ratings[key].username === username) {
+                firebase.database().ref(`ratings/${key}`).remove();
             }
         });
 
         loadAverages();
-        loadRanking();
-        loadUsernames();  // Atualizar a lista de usuários após excluir
+        loadRankings();
+    }).catch((error) => {
+        console.error('Erro ao carregar dados do Firebase:', error);
     });
 }
+
+// Load initial data
+loadUsernames();
