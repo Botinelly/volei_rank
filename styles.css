@@ -177,3 +177,10 @@ button:hover {
         font-size: 14px;
     }
 }
+
+/* Ajustes para dispositivos móveis */
+@media (max-width: 768px) {
+    table {
+        overflow-x: auto;
+    }
+}

@@ -343,7 +343,7 @@ function displayTeams(teams) {
                 'Bloqueio': 'Bloqueio/Ataque'
             }
             //: (Saque: ${player.averages.serve}, Ataque: ${player.averages.attack}, Bloqueio: ${player.averages.block}, Levantamento: ${player.averages.set}, Recepção: ${player.averages.reception})
-            listItem.textContent = `${player.user} | Posição SUGERIDA: 1° ${convert[position[0]]} / 2° ${convert[position[1]]}`;
+            listItem.textContent = `${player.user} | Posições: 1° ${convert[position[0]]} / 2° ${convert[position[1]]}`;
             teamList.appendChild(listItem);
         });
 
